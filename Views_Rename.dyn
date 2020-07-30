@@ -1,0 +1,314 @@
+{
+  "Uuid": "0df96fa7-5f5c-415e-9ac4-133b2aea143e",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Views_Rename",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DSOffice.Data": {
+        "Key": "DSOffice.Data",
+        "Value": "DSOffice.dll"
+      },
+      "Views": {
+        "Key": "archilab.Revit.Views.Views",
+        "Value": "archilab.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      },
+      "Elements.Element": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "Revit.Elements.Element": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "DSCore.List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "archilabUI.ViewTypesUi, archilabUI2021",
+      "SelectedIndex": 9,
+      "SelectedString": "FloorPlan",
+      "NodeType": "ExtensionNode",
+      "Id": "d6948b5826564e48b30bbaf97b68256f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e92f37fb47ce46caa73a73ae702f3f4f",
+          "Name": "viewType",
+          "Description": "The selected viewType",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Retrieve all available View Types."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "D:\\Work\\Dynamo\\Data.xlsx",
+      "InputValue": "Work\\Dynamo\\Data.xlsx",
+      "NodeType": "ExtensionNode",
+      "Id": "33d01899bf26454580b8b70435ff4f5a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3130ec3c07734485b45e4d14ab775f1e",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "1134f17069474b6db8681834ffe93797",
+      "Inputs": [
+        {
+          "Id": "66acf34d83ef4541b44ea42c01b7258d",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1090ecfe035948ea8fd5c25eff203883",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from a path."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "//Import Excel Data\nImportExcelFile = DSOffice.Data.ImportExcel(ExcelFile, \"Views\", false, false);\nRemoveHeaders\t= DSCore.List.RestOfItems(ImportExcelFile);\nExcelData \t\t= DSCore.List.Transpose(RemoveHeaders);\n\n//New View Names\nNewViewNames    = ExcelData[0];\n\n//Views To Rename\nViewsList       = Views.GetByType(ViewType1);\nViewsToRename   = DSCore.List.Slice(ViewsList, 0, 10, 1);\n\n//Rename Views\nElements.Element.SetParameterByName(ViewsToRename, \"View Name\", NewViewNames);",
+      "Id": "48e2addd9f664309b5ae0f8a693a33bd",
+      "Inputs": [
+        {
+          "Id": "b6b0a2b72ffb4f14916b6597f0ab7c77",
+          "Name": "ExcelFile",
+          "Description": "ExcelFile",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a52891c1329740febbc837cb5b987fe9",
+          "Name": "ViewType1",
+          "Description": "ViewType1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bef9d16d4fd044adbd080ed165358174",
+          "Name": "",
+          "Description": "ImportExcelFile",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1a05a9f7c15c40f1873c9e1e2cc29d55",
+          "Name": "",
+          "Description": "RemoveHeaders",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "96d9010780824c37bef5b6f605064cf3",
+          "Name": "",
+          "Description": "ExcelData",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dc2c5ec539ab489ba80da2af7228ac3a",
+          "Name": "",
+          "Description": "NewViewNames",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3270790661c247008a6557f4feedd654",
+          "Name": "",
+          "Description": "ViewsList",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "562bc1b6e2fa4ded89a29b4a61cd7c0a",
+          "Name": "",
+          "Description": "ViewsToRename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "deb4f9ff74d24dc4a869a58366bbda05",
+          "Name": "",
+          "Description": "Value of expression at line 14",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e92f37fb47ce46caa73a73ae702f3f4f",
+      "End": "a52891c1329740febbc837cb5b987fe9",
+      "Id": "c72ee404dacd4dc087de3d86e979ca47"
+    },
+    {
+      "Start": "3130ec3c07734485b45e4d14ab775f1e",
+      "End": "66acf34d83ef4541b44ea42c01b7258d",
+      "Id": "b9228e6a9f2f4f968a0358f6cd0d26e9"
+    },
+    {
+      "Start": "1090ecfe035948ea8fd5c25eff203883",
+      "End": "b6b0a2b72ffb4f14916b6597f0ab7c77",
+      "Id": "201507ac1c7b4724bf73f1a2b227d3d2"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "archi-lab.net",
+      "Version": "2021.25.11",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "d6948b5826564e48b30bbaf97b68256f"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "View Type",
+        "Id": "d6948b5826564e48b30bbaf97b68256f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -36.3815279103824,
+        "Y": 822.21290740076779
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "33d01899bf26454580b8b70435ff4f5a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -163.61597589669668,
+        "Y": 719.00173811746924
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File From Path",
+        "Id": "1134f17069474b6db8681834ffe93797",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 21.618472089617597,
+        "Y": 719.00173811746924
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "48e2addd9f664309b5ae0f8a693a33bd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 168.13208548663204,
+        "Y": 778.437946688766
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "34588d9b102c4f6b953eb51d651ada87",
+        "Title": "archilab",
+        "Nodes": [],
+        "Left": 15.162217318609748,
+        "Top": 914.14049258025511,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 259.82688026316464,
+    "Y": -757.00247606697076,
+    "Zoom": 1.4046726122164988
+  }
+}

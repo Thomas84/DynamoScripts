@@ -1,0 +1,381 @@
+{
+  "Uuid": "0e668317-f1ee-4264-b818-ff91f7846e71",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Views_Duplicate",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Views": {
+        "Key": "archilab.Revit.Views.Views",
+        "Value": "archilab.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      },
+      "DSOffice.Data": {
+        "Key": "DSOffice.Data",
+        "Value": "DSOffice.dll"
+      },
+      "DSCore.List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "66f33cffcef8457daa19e8fb25474ee3",
+      "Inputs": [
+        {
+          "Id": "b15b9d53577d48c99601b2b529bf4743",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "da6596fe0aea4b058fe50513c1dd5252",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from a path."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "34ac4ca3-86ac-40f2-9ed1-2ea1e7e3b6c3",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "ef0ebc9c01ad4f1495c6348c1fcf960f",
+      "Inputs": [
+        {
+          "Id": "ed592b8d1fb44763beadfc720d678bee",
+          "Name": "view",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0cc285915c3b4c6e869677c6cba70770",
+          "Name": "name",
+          "Description": "string[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c721ca3e696a4c79957eb6d1fc651f83",
+          "Name": "view",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Duplicates a given view with detailing"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "//Import Excel Data\nImportExcelFile = DSOffice.Data.ImportExcel(ExcelFile, \"Views\", false, false);\nRemoveHeaders\t= DSCore.List.RestOfItems(ImportExcelFile);\nExcelData \t\t= DSCore.List.Transpose(RemoveHeaders);\n\n//View To Duplicate\nViewsList \t\t= Views.GetByType(ViewType1);\nViewToDuplicate = ViewsList[0];\n\n//Duplicated View Names\nDuplicatedViewNames = ExcelData[0];",
+      "Id": "9b7c9dfc6bdc41c9aad3487af12fe478",
+      "Inputs": [
+        {
+          "Id": "41b6d15b82b247cbb713ad94d5883bde",
+          "Name": "ExcelFile",
+          "Description": "ExcelFile",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2d1c423c5ce74fbd8d3e4d8c3fe329cd",
+          "Name": "ViewType1",
+          "Description": "ViewType1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d30d87f0681b4cabaab70adad8e93c98",
+          "Name": "",
+          "Description": "ImportExcelFile",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "06b09ec9c20040c3b4849e1fd05d4194",
+          "Name": "",
+          "Description": "RemoveHeaders",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6b6da49603c145deaa748d40a7bb25e2",
+          "Name": "",
+          "Description": "ExcelData",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b2bc4607debd4939995a0d7af8a8344a",
+          "Name": "",
+          "Description": "ViewsList",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7d0cb4341037454a94bb1e8c138e2d25",
+          "Name": "",
+          "Description": "ViewToDuplicate",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "879074b675614c99b55f38d429141950",
+          "Name": "",
+          "Description": "DuplicatedViewNames",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "D:\\Work\\Dynamo\\Data.xlsx",
+      "InputValue": ".\\Data.xlsx",
+      "NodeType": "ExtensionNode",
+      "Id": "b884bce1e72e4486a84b4c6033f9f474",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "668ec4fab2a945988a142ac1392169c6",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "archilabUI.ViewTypesUi, archilabUI2021",
+      "SelectedIndex": 9,
+      "SelectedString": "FloorPlan",
+      "NodeType": "ExtensionNode",
+      "Id": "bc402f20981f492b84a76e0686f7ddcb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8953ba17bc4b4b76bf1c6d3da42576a8",
+          "Name": "viewType",
+          "Description": "The selected viewType",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Retrieve all available View Types."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "da6596fe0aea4b058fe50513c1dd5252",
+      "End": "41b6d15b82b247cbb713ad94d5883bde",
+      "Id": "30a29fd786b24c09af4de915abcf1901"
+    },
+    {
+      "Start": "7d0cb4341037454a94bb1e8c138e2d25",
+      "End": "ed592b8d1fb44763beadfc720d678bee",
+      "Id": "6f679efe193b4a01a8e5cd2bc63de399"
+    },
+    {
+      "Start": "879074b675614c99b55f38d429141950",
+      "End": "0cc285915c3b4c6e869677c6cba70770",
+      "Id": "9fcce322d9e441a9b661b4cac72e9c5f"
+    },
+    {
+      "Start": "668ec4fab2a945988a142ac1392169c6",
+      "End": "b15b9d53577d48c99601b2b529bf4743",
+      "Id": "6d2125bcbf9b4e5ebeea9174516ea070"
+    },
+    {
+      "Start": "8953ba17bc4b4b76bf1c6d3da42576a8",
+      "End": "2d1c423c5ce74fbd8d3e4d8c3fe329cd",
+      "Id": "45250587bec144adb8de7c1cfc0bfa64"
+    }
+  ],
+  "Dependencies": [
+    "34ac4ca3-86ac-40f2-9ed1-2ea1e7e3b6c3"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Clockwork for Dynamo 2.x",
+      "Version": "2.3.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "ef0ebc9c01ad4f1495c6348c1fcf960f"
+      ]
+    },
+    {
+      "Name": "archi-lab.net",
+      "Version": "2021.25.14",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "bc402f20981f492b84a76e0686f7ddcb"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.065758661045827,
+      "EyeY": 23.999869007830455,
+      "EyeZ": 49.986424120097482,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "File From Path",
+        "Id": "66f33cffcef8457daa19e8fb25474ee3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 448.73325904425894,
+        "Y": 162.160648752725
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "View.DuplicateWithDetailing",
+        "Id": "ef0ebc9c01ad4f1495c6348c1fcf960f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1428.0350298758319,
+        "Y": 360.13047817326355
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "9b7c9dfc6bdc41c9aad3487af12fe478",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 603.21243039059732,
+        "Y": 219.13047817326355
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "b884bce1e72e4486a84b4c6033f9f474",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 261.646852114394,
+        "Y": 162.160648752725
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "View Type",
+        "Id": "bc402f20981f492b84a76e0686f7ddcb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 396.27864302897268,
+        "Y": 263.04974122412165
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "90381c4c1afd4f818d3c68a3b86141cd",
+        "Title": "Clockwork",
+        "Nodes": [],
+        "Left": 1487.1569786727084,
+        "Top": 316.17967099624087,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "e82ce5bb70a7468c8d0a8147a3c33801",
+        "Title": "archilab",
+        "Nodes": [],
+        "Left": 446.21546650262883,
+        "Top": 356.87304842251831,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -267.923034432801,
+    "Y": 147.43818497278926,
+    "Zoom": 1.1386455905173543
+  }
+}
