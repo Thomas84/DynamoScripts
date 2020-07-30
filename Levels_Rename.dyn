@@ -1,0 +1,346 @@
+{
+  "Uuid": "da740578-bc01-47a7-aaca-3211834d5fe7",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Levels_Rename",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "DSOffice.Data": {
+        "Key": "DSOffice.Data",
+        "Value": "DSOffice.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      },
+      "Level": {
+        "Key": "Revit.Elements.Level",
+        "Value": "RevitNodes.dll"
+      },
+      "FloorPlanView": {
+        "Key": "Revit.Elements.Views.FloorPlanView",
+        "Value": "RevitNodes.dll"
+      },
+      "CeilingPlanView": {
+        "Key": "Revit.Elements.Views.CeilingPlanView",
+        "Value": "RevitNodes.dll"
+      },
+      "StructuralPlanView": {
+        "Key": "Revit.Elements.Views.StructuralPlanView",
+        "Value": "RevitNodes.dll"
+      },
+      "Elements.Element": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "Revit.Elements.Element": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "DSCore.List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "fedeee84f4b44ab18679888ffabab8d2",
+      "Inputs": [
+        {
+          "Id": "9fc76c826db846afb6c69191c3f34284",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "17e06967927f47efbf9a478cb362d591",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from a path."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "//Import Excel Data\nImportExcelFile = DSOffice.Data.ImportExcel(ExcelFile, \"Levels\", false, false);\nRemoveHeaders\t= DSCore.List.RestOfItems(ImportExcelFile);\nExcelData \t\t= DSCore.List.Transpose(RemoveHeaders);\n\n//Levels To Rename\nLevelsToRename  = DSCore.List.Slice(Levels, 1, 11, 1);\n\n//New Level Names\nLevelNames      = ExcelData[0];\nNewLevelNames   = DSCore.List.Slice(LevelNames, 0, 10, 1);\n\n//Rename Levels\nRenameLevels    = Elements.Element.SetParameterByName(LevelsToRename, \"Name\", NewLevelNames);",
+      "Id": "4d177cc467f5408c94fb7d96803c7211",
+      "Inputs": [
+        {
+          "Id": "d240c6bcdfbe475ba2fe92998841ccb2",
+          "Name": "ExcelFile",
+          "Description": "ExcelFile",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0cb9addffd184200b858c1a3e2c4bf86",
+          "Name": "Levels",
+          "Description": "Levels",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "39eb8cc2580841d89d2d90203ea631c8",
+          "Name": "",
+          "Description": "ImportExcelFile",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6142df5891634e40a742d77cb066255d",
+          "Name": "",
+          "Description": "RemoveHeaders",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1f362946e3944fb2b646a5b5a75e8e66",
+          "Name": "",
+          "Description": "ExcelData",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9922d9440aae477e84cbf31d8af0c736",
+          "Name": "",
+          "Description": "LevelsToRename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9e6c9b8a812a4ab2a99f58fb8df5cfa3",
+          "Name": "",
+          "Description": "LevelNames",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "37712e01ae8e45269f944ea5cd4d3edc",
+          "Name": "",
+          "Description": "NewLevelNames",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3b8e6fbf3328488fb4cccbaba6b61b3f",
+          "Name": "",
+          "Description": "RenameLevels",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 274,
+      "SelectedString": "OST_Levels",
+      "NodeType": "ExtensionNode",
+      "Id": "354b7252c19e40d68c1c62df017ca62a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0c1e5a72a8c64354b1e68cc770980a68",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.ElementsOfCategory, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "Id": "718f15dc2beb4ed2ac2b5da2317012e8",
+      "Inputs": [
+        {
+          "Id": "4f76793f8b134ec68e5cfecde7218017",
+          "Name": "Category",
+          "Description": "The Category",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5495c69d45024d8185cd4e8882492c76",
+          "Name": "Elements",
+          "Description": "An element type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Get all elements of the specified category from the model."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "D:\\Work\\Dynamo\\Data.xlsx",
+      "InputValue": ".\\Data.xlsx",
+      "NodeType": "ExtensionNode",
+      "Id": "310820ab9b6c46e5a2126b8f8a53205b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ea4feeb9ff744d2da991a6f8d3b04350",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "17e06967927f47efbf9a478cb362d591",
+      "End": "d240c6bcdfbe475ba2fe92998841ccb2",
+      "Id": "7c1f2be7b9c94150badd09a9402807b3"
+    },
+    {
+      "Start": "0c1e5a72a8c64354b1e68cc770980a68",
+      "End": "4f76793f8b134ec68e5cfecde7218017",
+      "Id": "218b76c0b06d44faaec821ffe103fc2b"
+    },
+    {
+      "Start": "5495c69d45024d8185cd4e8882492c76",
+      "End": "0cb9addffd184200b858c1a3e2c4bf86",
+      "Id": "3a4d5d71125e4c66a5eb4b3831a7e0d7"
+    },
+    {
+      "Start": "ea4feeb9ff744d2da991a6f8d3b04350",
+      "End": "9fc76c826db846afb6c69191c3f34284",
+      "Id": "4fcc9413b5b74a54b2b1ec93e6561de2"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "File From Path",
+        "Id": "fedeee84f4b44ab18679888ffabab8d2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 517.06469407512293,
+        "Y": 244.84128633261085
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4d177cc467f5408c94fb7d96803c7211",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 675.035540302433,
+        "Y": 300.39398162231254
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "354b7252c19e40d68c1c62df017ca62a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 262.99712692910009,
+        "Y": 346.10057794943572
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "All Elements of Category",
+        "Id": "718f15dc2beb4ed2ac2b5da2317012e8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 453.06469407512293,
+        "Y": 346.10057794943572
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "310820ab9b6c46e5a2126b8f8a53205b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 329.80033854443604,
+        "Y": 244.84128633261085
+      }
+    ],
+    "Annotations": [],
+    "X": -317.28832830090943,
+    "Y": -63.971353227156328,
+    "Zoom": 1.3205023657712163
+  }
+}
