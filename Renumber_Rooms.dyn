@@ -1,0 +1,524 @@
+{
+  "Uuid": "7b5ddae9-9e0c-4490-92e5-05129e5bf77b",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Renumber Rooms",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Revit.Element": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "Revit.Elements.Element": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "Plane": {
+        "Key": "Autodesk.DesignScript.Geometry.Plane",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Curve": {
+        "Key": "Autodesk.DesignScript.Geometry.Curve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PolyCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.PolyCurve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "DSCore.List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      },
+      "Revit.Elements": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "archilab.Revit.Elements.Elements.Room": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "Revit.Elements.Elements.Element": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "Revit.Elements.Elements": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "archilab.Revit.Elements.Elements.Element": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "Revit.Elements.Element.Room": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "archilab.Revit.Elements.Room": {
+        "Key": "archilab.Revit.Elements.Room",
+        "Value": "archilab2021.dll"
+      },
+      "Plane.XY": {
+        "Key": "Autodesk.DesignScript.Geometry.Plane",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Nodes.DSModelElementSelection, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "InstanceId": [
+        "21a1cc27-231c-4acb-9c3d-63fcf6106b3f-00054ea1"
+      ],
+      "Id": "9b7007ee81494ce58853ae2cf31f1925",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "279f735ee8b34cc39cac729aa45a91f1",
+          "Name": "Element",
+          "Description": "The selected elements.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.ElementsOfCategory, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "Id": "dfee508692e64c69a5772f16505dd861",
+      "Inputs": [
+        {
+          "Id": "c7de8a49aa8241a9b9813b30c3813bd1",
+          "Name": "Category",
+          "Description": "The Category",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "aea105d0c45f48659c2aece0bdf1e671",
+          "Name": "Elements",
+          "Description": "An element type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Get all elements of the specified category from the model."
+    },
+    {
+      "ConcreteType": "DSRevitNodesUI.Categories, DSRevitNodesUI",
+      "SelectedIndex": 468,
+      "SelectedString": "OST_Rooms",
+      "NodeType": "ExtensionNode",
+      "Id": "3b48d71341db4e2c8a59e70d20e6a9da",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7e1e311fe5944382bae9227d40a02aa2",
+          "Name": "Category",
+          "Description": "The selected Category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "All built-in categories."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "//Convert Spline Into Geometry\nSpline = Revit.Element.Geometry(Spline1);\n\n//Room Boundaries\nRoomBoundaries = PolyCurve.ByJoinedCurves(RoomBoundaries1, 1);\n\n//Pull Spline & Room Boundaries Onto XY Plane\nPlaneXY        = Plane.XY();\nSplinePlane    = Curve.PullOntoPlane(Spline, PlaneXY);\nRoomsPlane     = Curve.PullOntoPlane(RoomBoundaries, PlaneXY);\nRoomsPlaneList = DSCore.List.Flatten(RoomsPlane, -1);\n\n//Intersecting Points\nMaskIntersectingPoints \t = Geometry.Intersect(SplinePlane<1L>, RoomsPlaneList<1L>);\nEmptyList \t\t\t\t = DSCore.List.IsEmpty(MaskIntersectingPoints<1L>);\nFilterIntersectingPoints = DSCore.List.FilterByBoolMask(MaskIntersectingPoints, EmptyList);\nIntersectingPoints \t \t = Dictionary.ValueAtKey(FilterIntersectingPoints, \"out\");\nIntersectingPointsList \t = DSCore.List.GetItemAtIndex(IntersectingPoints<1L>, 0);\nSplinePoints \t \t\t = Curve.ParameterAtPoint(SplinePlane<1L>, IntersectingPointsList<1L>);\n\n//Intersecting Rooms\nFilterIntersectingRooms = DSCore.List.FilterByBoolMask(Rooms1, EmptyList);\nIntersectingRooms \t\t= Dictionary.ValueAtKey(FilterIntersectingRooms, \"out\");\nReorderRoomPoints\t\t= DSCore.List.SortByKey(IntersectingRooms, SplinePoints);\nReorderedRooms \t\t\t= Dictionary.ValueAtKey(ReorderRoomPoints, \"sorted list\");\n\n//Renumber Sequence\nNumberOfRooms \t = DSCore.List.Count(ReorderedRooms);\nStartingNumber \t = 201;\nPrefix1 \t\t = \"R.\";\nRenumberRange \t = StartingNumber..StartingNumber+(NumberOfRooms-1)..1;\nRenumberSequence = Prefix1 + RenumberRange;\n\n//Renumber Rooms\nRenumberRooms = Revit.Element.SetParameterByName(ReorderedRooms, \"Number\", RenumberSequence);",
+      "Id": "b4f1b82426fa4fa88fc4fb78c0b26cb2",
+      "Inputs": [
+        {
+          "Id": "d1f162d5ee964bf79257a50b8f74a358",
+          "Name": "Spline1",
+          "Description": "Spline1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bcfe1418c07541f4874a9387ad681c0d",
+          "Name": "RoomBoundaries1",
+          "Description": "RoomBoundaries1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ea6e32184c7a4c55b5fe422e68f5fa28",
+          "Name": "Rooms1",
+          "Description": "Rooms1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e975d10e48404b9388a03864d915859e",
+          "Name": "",
+          "Description": "Spline",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "61727269681147ecbfe0979d7d6a66dd",
+          "Name": "",
+          "Description": "RoomBoundaries",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8731a7bfee1e4e9584f7b5f91c8c3cd5",
+          "Name": "",
+          "Description": "PlaneXY",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1d1cb32ca8934c90a2a5f0682d9506cc",
+          "Name": "",
+          "Description": "SplinePlane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "284ab95e993f4a7982174a77827fec65",
+          "Name": "",
+          "Description": "RoomsPlane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d76735b482f747518a42417f07a00175",
+          "Name": "",
+          "Description": "RoomsPlaneList",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "46db003204fb4eb6bb567ca4d0c553af",
+          "Name": "",
+          "Description": "MaskIntersectingPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eb16745cd56248ecb7ec8bc971e8cf9a",
+          "Name": "",
+          "Description": "EmptyList",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "772b84270cd542cb9aaa54e81d49b780",
+          "Name": "",
+          "Description": "FilterIntersectingPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eca53b219c234964a994d2ecc48a89af",
+          "Name": "",
+          "Description": "IntersectingPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5378ebb92c354a08b7ade933c3f3b816",
+          "Name": "",
+          "Description": "IntersectingPointsList",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0529ac2b35f14df39c2489f6b115d24d",
+          "Name": "",
+          "Description": "SplinePoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9d1bb9b8dce24b27817cd614144f9671",
+          "Name": "",
+          "Description": "FilterIntersectingRooms",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "47f727c973ce4694ad3c24b0818aed9f",
+          "Name": "",
+          "Description": "IntersectingRooms",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "adca5c9f72af4eb5bb429f202a726f9a",
+          "Name": "",
+          "Description": "ReorderRoomPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "93ab101ce7f44653989b362a6df380ea",
+          "Name": "",
+          "Description": "ReorderedRooms",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "40ac8580b23e45b8a89503755aafd150",
+          "Name": "",
+          "Description": "NumberOfRooms",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7c293e7e36784d0794cffa1833dfc974",
+          "Name": "",
+          "Description": "StartingNumber",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8086a7f29b8e411eb88589accd1ec008",
+          "Name": "",
+          "Description": "Prefix1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c701919f3cc7419c88223feb5352a474",
+          "Name": "",
+          "Description": "RenumberRange",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d03fa8103cec47c0b1b92a9630954703",
+          "Name": "",
+          "Description": "RenumberSequence",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "983ec073e56a411aaccb13ce56143c91",
+          "Name": "",
+          "Description": "RenumberRooms",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Revit.Elements.Room.FinishBoundary",
+      "Id": "1c1d497978a4446683e2b495c0c7edf3",
+      "Inputs": [
+        {
+          "Id": "fbc78103a9e34d41bd8dd202a74fe07a",
+          "Name": "room",
+          "Description": "Revit.Elements.Room",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d2192f00cfc4414ab9d63ed4800ee103",
+          "Name": "Curve[][]",
+          "Description": "Curve[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Finish boundary\n\nRoom.FinishBoundary: Curve[][]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "279f735ee8b34cc39cac729aa45a91f1",
+      "End": "d1f162d5ee964bf79257a50b8f74a358",
+      "Id": "d973b91638524cfcbf1fb811c1859a72"
+    },
+    {
+      "Start": "aea105d0c45f48659c2aece0bdf1e671",
+      "End": "fbc78103a9e34d41bd8dd202a74fe07a",
+      "Id": "3e167252e18248b6b113dedefab8d907"
+    },
+    {
+      "Start": "aea105d0c45f48659c2aece0bdf1e671",
+      "End": "ea6e32184c7a4c55b5fe422e68f5fa28",
+      "Id": "432f91e467b44ab6adf403e7479eb451"
+    },
+    {
+      "Start": "7e1e311fe5944382bae9227d40a02aa2",
+      "End": "c7de8a49aa8241a9b9813b30c3813bd1",
+      "Id": "fc236d247376421ebb27be4baa1b74c2"
+    },
+    {
+      "Start": "d2192f00cfc4414ab9d63ed4800ee103",
+      "End": "bcfe1418c07541f4874a9387ad681c0d",
+      "Id": "adc5090919db4f52b7a06c44794389e7"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -3802.7749899164132,
+      "EyeY": 20071.321258395983,
+      "EyeZ": 5591.3880581695257,
+      "LookX": 1627.5081124202088,
+      "LookY": -20269.464836327574,
+      "LookZ": -5428.4262183972387,
+      "UpX": 0.25356735998369218,
+      "UpY": 0.46947156278589042,
+      "UpZ": -0.84575412838854847
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Select Model Element",
+        "Id": "9b7007ee81494ce58853ae2cf31f1925",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -463.23520091770422,
+        "Y": 257.62092570948454
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "All Elements of Category",
+        "Id": "dfee508692e64c69a5772f16505dd861",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -723.76148972391945,
+        "Y": 354.71769554029095
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Categories",
+        "Id": "3b48d71341db4e2c8a59e70d20e6a9da",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -920.76148972391957,
+        "Y": 354.71769554029095
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "b4f1b82426fa4fa88fc4fb78c0b26cb2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -219.00860426820529,
+        "Y": 325.65214148188574
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Room.FinishBoundary",
+        "Id": "1c1d497978a4446683e2b495c0c7edf3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -498.235200917704,
+        "Y": 420.881300311373
+      }
+    ],
+    "Annotations": [],
+    "X": 965.40373734467448,
+    "Y": -139.71282710927107,
+    "Zoom": 1.0159023240917093
+  }
+}

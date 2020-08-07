@@ -1,0 +1,399 @@
+{
+  "Uuid": "7b5ddae9-9e0c-4490-92e5-05129e5bf77b",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Renumber Elements",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Revit.Element": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "Revit.Elements.Element": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "Plane": {
+        "Key": "Autodesk.DesignScript.Geometry.Plane",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Curve": {
+        "Key": "Autodesk.DesignScript.Geometry.Curve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PolyCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.PolyCurve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "DSCore.List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Dictionary": {
+        "Key": "DesignScript.Builtin.Dictionary",
+        "Value": "DesignScriptBuiltin.dll"
+      },
+      "Revit.Elements": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "archilab.Revit.Elements.Elements.Room": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "Revit.Elements.Elements.Element": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "Revit.Elements.Elements": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "archilab.Revit.Elements.Elements.Element": {
+        "Key": "archilab.Revit.Elements.Elements",
+        "Value": "archilab2021.dll"
+      },
+      "Revit.Elements.Element.Room": {
+        "Key": "Revit.Elements.Element",
+        "Value": "RevitNodes.dll"
+      },
+      "archilab.Revit.Elements.Room": {
+        "Key": "archilab.Revit.Elements.Room",
+        "Value": "archilab2021.dll"
+      },
+      "Plane.XY": {
+        "Key": "Autodesk.DesignScript.Geometry.Plane",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Nodes.DSModelElementSelection, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "InstanceId": [
+        "3686ca0f-09a2-4fc0-869d-e9801e2144f0-00055b8d"
+      ],
+      "Id": "9b7007ee81494ce58853ae2cf31f1925",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "279f735ee8b34cc39cac729aa45a91f1",
+          "Name": "Element",
+          "Description": "The selected elements.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "//Convert Spline Into Geometry\nSpline = Revit.Element.Geometry(spline);\n\n//Convert Element Into Geometry\nelements = Revit.Element.GetLocation(Elements1);\n\n//Pull Spline Onto XY Plane\nPlaneXY     = Plane.XY();\nSplinePlane = Curve.PullOntoPlane(Spline, PlaneXY);\n\n//Closest Points\nXPoints \t  = Autodesk.Point.X(elements);\nYPoints \t  = Autodesk.Point.Y(elements);\nElementPoints = Autodesk.Point.ByCoordinates(XPoints, YPoints, 0);\nSplinePoints  = Curve.ParameterAtPoint(SplinePlane<1L>, ClosestPoints<1L>);\nClosestPoints = Geometry.ClosestPointTo(SplinePlane<1L>, ElementPoints<1L>);\n\n//Closest Elements\nReorderElementPoints = DSCore.List.SortByKey(Elements1, SplinePoints);\nReorderedElements\t = Dictionary.ValueAtKey(ReorderElementPoints, \"sorted list\");\n\n//Renumber Sequence\nNumberOfElements = DSCore.List.Count(ReorderedElements);\nStartingNumber \t = 1;\nPrefix1 \t\t = \"W.\";\nRenumberRange \t = StartingNumber..StartingNumber+(NumberOfElements-1)..1;\nRenumberSequence = Prefix1 + RenumberRange;\n\n//Renumber Elements\nRenumberElements = Revit.Element.SetParameterByName(ReorderedElements, \"Mark\", RenumberSequence);",
+      "Id": "b4f1b82426fa4fa88fc4fb78c0b26cb2",
+      "Inputs": [
+        {
+          "Id": "17618ebb69a840acbda371bf7dd59ca7",
+          "Name": "spline",
+          "Description": "spline",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "13eed32787184d70a93d37737f95628b",
+          "Name": "Elements1",
+          "Description": "Elements1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b98dba62202041f19fd1d053ff49110f",
+          "Name": "",
+          "Description": "Spline",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "deddaa9e289b49afa7cc6a138e1bead2",
+          "Name": "",
+          "Description": "elements",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d19103b9613942d0b15e29d3cf6ab33d",
+          "Name": "",
+          "Description": "PlaneXY",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1d841167ecdc4ef4a58121788ace14c9",
+          "Name": "",
+          "Description": "SplinePlane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "57d061d1096b4833b209eb8484e1fb59",
+          "Name": "",
+          "Description": "XPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7df0a0b61ed24c4db92722cc0232921b",
+          "Name": "",
+          "Description": "YPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "205f362fcd624e0c9d6a79e93128951a",
+          "Name": "",
+          "Description": "ElementPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8277fdbbc73e448885d5dc841304040c",
+          "Name": "",
+          "Description": "SplinePoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b9e8e2f7c14c4786ac3eca4202e4c6ee",
+          "Name": "",
+          "Description": "ClosestPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e45a53ca57ea4558978ac73e68dd6d73",
+          "Name": "",
+          "Description": "ReorderElementPoints",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d05044282bc8424589b5e317a42c6906",
+          "Name": "",
+          "Description": "ReorderedElements",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "06cfb529ee514b4c82c82d1242e9ee14",
+          "Name": "",
+          "Description": "NumberOfElements",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2705e06bfd1c49419deca51672323129",
+          "Name": "",
+          "Description": "StartingNumber",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2a9e7a79e1334455b904af1c4f459ec9",
+          "Name": "",
+          "Description": "Prefix1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "446b54a730cb4097ba0c759e27180d8f",
+          "Name": "",
+          "Description": "RenumberRange",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6d2e5269a1294d659973538db88f49ee",
+          "Name": "",
+          "Description": "RenumberSequence",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "761d3545e4f840b586fcef6d9d8a08f9",
+          "Name": "",
+          "Description": "RenumberElements",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Nodes.DSModelElementsSelection, DSRevitNodesUI",
+      "NodeType": "ExtensionNode",
+      "InstanceId": [
+        "a7d09a49-dbf4-42e6-ae1d-c2a7a89cad70-00055044",
+        "a7d09a49-dbf4-42e6-ae1d-c2a7a89cad70-0005510c",
+        "a7d09a49-dbf4-42e6-ae1d-c2a7a89cad70-00055168",
+        "a7d09a49-dbf4-42e6-ae1d-c2a7a89cad70-000551da",
+        "a7d09a49-dbf4-42e6-ae1d-c2a7a89cad70-00055233",
+        "a7d09a49-dbf4-42e6-ae1d-c2a7a89cad70-0005525d",
+        "a7d09a49-dbf4-42e6-ae1d-c2a7a89cad70-00055357",
+        "a7d09a49-dbf4-42e6-ae1d-c2a7a89cad70-00055387",
+        "8a75ac5e-cdc6-49b1-b4a8-4ebb686826a1-0005548f",
+        "8a75ac5e-cdc6-49b1-b4a8-4ebb686826a1-00055494",
+        "8a75ac5e-cdc6-49b1-b4a8-4ebb686826a1-00055499",
+        "8a75ac5e-cdc6-49b1-b4a8-4ebb686826a1-0005549e",
+        "8a75ac5e-cdc6-49b1-b4a8-4ebb686826a1-000554a7",
+        "8a75ac5e-cdc6-49b1-b4a8-4ebb686826a1-000554ac",
+        "8a75ac5e-cdc6-49b1-b4a8-4ebb686826a1-000554b1",
+        "8a75ac5e-cdc6-49b1-b4a8-4ebb686826a1-000554b6"
+      ],
+      "Id": "53097c64d206421cacd99db8a3aa7c66",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "662c675a7039420fae8ffea9b307307e",
+          "Name": "Elements",
+          "Description": "The selected elements.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "279f735ee8b34cc39cac729aa45a91f1",
+      "End": "17618ebb69a840acbda371bf7dd59ca7",
+      "Id": "325c06e9584b44ab8cac4601faf28811"
+    },
+    {
+      "Start": "662c675a7039420fae8ffea9b307307e",
+      "End": "13eed32787184d70a93d37737f95628b",
+      "Id": "5ab8b4198c314a1095d5a0c7649b7322"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 100.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -19706.665243555886,
+      "EyeY": 8362.2698456217913,
+      "EyeZ": 5709.8261011597615,
+      "LookX": 11656.581750024314,
+      "LookY": -11383.975699476403,
+      "LookZ": -7515.2157374576918,
+      "UpX": 0.381563615183131,
+      "UpY": 0.891006524188373,
+      "UpZ": -0.24600118174948998
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Select Model Element",
+        "Id": "9b7007ee81494ce58853ae2cf31f1925",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -463.235200917704,
+        "Y": 257.620925709485
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "b4f1b82426fa4fa88fc4fb78c0b26cb2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -225.49991438430925,
+        "Y": 257.620925709485
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Select Model Elements",
+        "Id": "53097c64d206421cacd99db8a3aa7c66",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -563.235200917704,
+        "Y": 399.58601429789007
+      }
+    ],
+    "Annotations": [],
+    "X": 815.47187327094343,
+    "Y": -270.85322052755043,
+    "Zoom": 1.3945717028892004
+  }
+}
